@@ -1,14 +1,30 @@
 <?php
 
-require '../Models/UserModel.php';
+require __DIR__ . '/../Models/UserModel.php';
 
 class AuthController {
-    public function register() {
-        try {
-            $result = register();
-        } catch (PDOException $e) {
-            $error = "Erreur lors de l'inscription : " . $e->getMessage();
-            return $error;
+    private UserModel $model;
+
+    public function __construct(PDO $pdo) {
+        $this->model = new UserModel($pdo);
+    }
+
+    public function register(User $user): array {
+        $errors = $user->validate(8);
+        if (!empty($errors)) {
+            return ['success' => false, 'messages' => $errors];
+        }
+
+        if ($this->model->existsByEmail($user->getEmail())) {
+            return ['success' => false, 'messages' => ["Cet email est déjà enregistré."]];
+        }
+
+        $ok = $this->model->register($user);
+        
+        if ($ok) {
+            return ['success' => true, 'messages' => ["Inscription réussie !"]];
+        } else {
+            return ['success' => false, 'messages' => ["Erreur lors de l'inscription."]];
         }
     }
 

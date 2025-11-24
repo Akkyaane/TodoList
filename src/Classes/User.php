@@ -1,19 +1,52 @@
 <?php
 class User {
-    private $email;
-    private $password;
-    private $userType;
+    private string $email;
+    private string $password;
+    private string $role;
 
-    public function __construct($email, $password) {
+    public function __construct(string $email = '', string $password = '') {
         $this->email = $email;
-        $this->password = password_hash($password, PASSWORD_DEFAULT);
+        $this->password = $password;
     }
-    
-    public function getEmail() {
+
+    public function getEmail(): string {
         return $this->email;
     }
 
-    public function getUserType() {
-        return $this->userType;
+    public function getPassword(): string {
+        return $this->password;
+    }
+
+    public function setEmail(string $email): void {
+        $this->email = $email;
+    }
+
+    public function setPassword(string $password): void {
+        $this->password = $password;
+    }
+
+    public function isEmailValid(): bool {
+        return filter_var($this->email, FILTER_VALIDATE_EMAIL) !== false;
+    }
+
+    public function isPasswordValid(int $minLength = 8): bool {
+        return strlen($this->password) >= $minLength;
+    }
+
+    public function validate(int $minPasswordLength = 8): array {
+        $errors = [];
+        if (empty($this->email)) {
+            $errors[] = "L'email est requis.";
+        } elseif (!$this->isEmailValid()) {
+            $errors[] = "L'email est invalide.";
+        }
+
+        if (empty($this->password)) {
+            $errors[] = "Le mot de passe est requis.";
+        } elseif (!$this->isPasswordValid($minPasswordLength)) {
+            $errors[] = "Le mot de passe doit contenir au moins $minPasswordLength caractères.";
+        }
+
+        return $errors;
     }
 }
