@@ -15,7 +15,7 @@ class AuthController {
             return ['success' => false, 'messages' => $errors];
         }
 
-        if ($this->model->existsByEmail($user->getEmail())) {
+        if ($this->model->isEmailAlreadyExists($user->getEmail())) {
             return ['success' => false, 'messages' => ["Cet email est déjà enregistré."]];
         }
 

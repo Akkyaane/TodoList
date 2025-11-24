@@ -9,14 +9,14 @@ class UserModel {
         $this->pdo = $pdo;
     }
 
-    public function existsByEmail(string $email): bool {
+    public function isEmailAlreadyExists(string $email): bool {
         $stmt = $this->pdo->prepare("SELECT COUNT(*) FROM users WHERE email = :email");
         $stmt->execute([':email' => $email]);
         return $stmt->fetchColumn() > 0;
     }
 
     public function register(User $user): bool {
-        if ($this->existsByEmail($user->getEmail())) {
+        if ($this->isEmailAlreadyExists($user->getEmail())) {
             return false;
         }
 
