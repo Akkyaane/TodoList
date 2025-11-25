@@ -150,7 +150,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       text-decoration: underline;
     }
 
-    /* Alerts */
     .alert {
       background: #fff;
       border: 1px solid rgba(0, 0, 0, 0.04);
