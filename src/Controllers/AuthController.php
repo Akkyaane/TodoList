@@ -2,14 +2,17 @@
 
 require __DIR__ . '/../Models/UserModel.php';
 
-class AuthController {
+class AuthController
+{
     private UserModel $model;
 
-    public function __construct(PDO $pdo) {
+    public function __construct(PDO $pdo)
+    {
         $this->model = new UserModel($pdo);
     }
 
-    public function register(User $user): array {
+    public function register(User $user): array
+    {
         $errors = $user->validate(8);
         if (!empty($errors)) {
             return ['success' => false, 'messages' => $errors];
@@ -20,7 +23,7 @@ class AuthController {
         }
 
         $ok = $this->model->register($user);
-        
+
         if ($ok) {
             return ['success' => true, 'messages' => ["Inscription réussie !"]];
         } else {
@@ -28,7 +31,8 @@ class AuthController {
         }
     }
 
-    public function login(string $email, string $password): array {
+    public function login(string $email, string $password): array
+    {
         $user = new User($email, $password);
         $errors = [];
 
@@ -58,7 +62,8 @@ class AuthController {
         return ['success' => true, 'messages' => ["Connexion réussie."]];
     }
 
-    public function logout(): void {
+    public function logout(): void
+    {
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }

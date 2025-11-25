@@ -1,31 +1,38 @@
 <?php
-class User {
+class User
+{
     private string $email;
     private string $password;
     private string $role;
 
-    public function __construct(string $email = '', string $password = '') {
+    public function __construct(string $email = '', string $password = '')
+    {
         $this->email = $email;
         $this->password = $password;
     }
 
-    public function getEmail(): string {
+    public function getEmail(): string
+    {
         return $this->email;
     }
 
-    public function getPassword(): string {
+    public function getPassword(): string
+    {
         return $this->password;
     }
 
-    public function isEmailValid(): bool {
+    public function isEmailValid(): bool
+    {
         return filter_var($this->email, FILTER_VALIDATE_EMAIL) !== false;
     }
 
-    public function isPasswordValid(int $minLength = 8): bool {
+    public function isPasswordValid(int $minLength = 8): bool
+    {
         return strlen($this->password) >= $minLength;
     }
 
-    public function validate(int $minPasswordLength = 8): array {
+    public function validate(int $minPasswordLength = 8): array
+    {
         $errors = [];
         if (empty($this->email)) {
             $errors[] = "L'email est requis.";
