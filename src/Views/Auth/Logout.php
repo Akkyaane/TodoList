@@ -7,4 +7,3 @@ $controller->logout();
 
 header('Location: ../Index.php');
 exit;
-?>

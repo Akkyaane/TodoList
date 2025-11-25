@@ -1,9 +1,10 @@
 <?php
 
 require '../../../config/config.php';
+require_once __DIR__ . '/../../Controllers/TaskController.php';
+require_once __DIR__ . '/../../Classes/Task.php';
 
 session_start();
-
 if (empty($_SESSION['user_id'])) {
     header('Location: ../Auth/Login.php');
     exit;
@@ -13,19 +14,24 @@ $errors = [];
 $success = false;
 $title = '';
 $content = '';
-$status = 'Pas commencé';
+$status = 1;
+$ended_at = '';
+
+$controller = new TaskController($pdo);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $title = trim($_POST['title'] ?? '');
     $content = trim($_POST['content'] ?? '');
-    $status = $_POST['status'] ?? 'Pas commencé';
+    $status = (int) ($_POST['status'] ?? 1);
+    $ended_at = trim($_POST['ended_at'] ?? '') ?: null;
+    $task = new Task($title, $content, $status, (int) $_SESSION['user_id'], null, $ended_at);
+    $res = $controller->create($task);
 
-    if ($title === '') {
-        $errors[] = "Le titre est requis.";
-    }
-
-    if (empty($errors)) {
-        $success = true;
+    if ($res['success']) {
+        header('Location: ../Dashboard.php');
+        exit;
+    } else {
+        $errors = $res['messages'];
     }
 }
 ?>
@@ -46,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             --muted: #6b6b6b;
             --border: rgba(0, 0, 0, 0.06);
             --btn-bg: rgba(0, 0, 0, 0.03);
-            --radius: 10px;
+            --radius: 12px;
             --status-done: #16a34a;
             --status-inprogress: #f97316;
             --status-todo: #ef4444;
@@ -75,7 +81,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             border-bottom: 1px solid var(--border);
         }
 
-        .navbar-brand,
+        .navbar .navbar-brand,
         .navbar .btn {
             color: var(--text) !important;
         }
@@ -128,8 +134,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             color: #fff !important;
         }
 
-        .alert.alert-danger ul,
-        .alert.alert-danger li {
+        .alert.alert-success {
+            background: var(--status-done);
+            border-color: rgba(22, 163, 74, 0.12);
+            color: #fff !important;
+        }
+
+        .alert.alert-success ul,
+        .alert.alert-success li {
             color: #fff;
         }
 
@@ -147,11 +159,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <ul class="navbar-nav ms-auto align-items-center">
                     <?php if (!empty($_SESSION['email'])): ?>
                         <li class="nav-item me-3 text-white small">Connecté :
-                            <?= htmlspecialchars($_SESSION['email'], ENT_QUOTES, 'UTF-8') ?></li>
+                            <?= htmlspecialchars($_SESSION['email'], ENT_QUOTES, 'UTF-8') ?>
+                        </li>
                     <?php endif; ?>
                     <li class="nav-item">
                         <form method="post" action="../Auth/Logout.php" class="mb-0">
-                            <button type="submit" class="btn btn-danger">Se déconnecter</button>
+                            <button type="submit" class="btn">Se déconnecter</button>
                         </form>
                     </li>
                 </ul>
@@ -201,10 +214,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <div class="mb-4">
                         <label for="status" class="form-label">Statut</label>
                         <select id="status" name="status" class="form-select">
-                            <option <?= $status === 'Pas commencé' ? 'selected' : '' ?>>Pas commencé</option>
-                            <option <?= $status === 'En cours' ? 'selected' : '' ?>>En cours</option>
-                            <option <?= $status === 'Terminé' ? 'selected' : '' ?>>Terminé</option>
+                            <option value="1" <?= $status === 1 ? 'selected' : '' ?>>Pas commencé</option>
+                            <option value="2" <?= $status === 2 ? 'selected' : '' ?>>En cours</option>
+                            <option value="3" <?= $status === 3 ? 'selected' : '' ?>>Terminé</option>
                         </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="ended_at" class="form-label">Date de fin</label>
+                        <input id="ended_at" name="ended_at" type="date" class="form-control"
+                            value="<?= htmlspecialchars($ended_at ?? '', ENT_QUOTES, 'UTF-8') ?>">
                     </div>
 
                     <div class="d-flex gap-2">

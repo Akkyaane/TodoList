@@ -25,6 +25,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $result = $controller->register($user);
     $success = $result['success'] ?? false;
     $messages = $result['messages'] ?? [];
+
+    if ($success) {
+      $loginResult = $controller->login($email, $password);
+      if (($loginResult['success'] ?? false) === true) {
+        header('Location: ../Dashboard.php');
+        exit;
+      }
+    }
   }
 }
 ?>
@@ -46,7 +54,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       --muted: #6b6b6b;
       --border: rgba(0, 0, 0, 0.06);
       --btn-bg: rgba(0, 0, 0, 0.03);
-      --radius: 10px;
+      --radius: 12px;
+      /* harmonisé */
       --status-done: #16a34a;
       --status-inprogress: #f97316;
       --status-todo: #ef4444;
@@ -159,8 +168,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       color: #fff !important;
     }
 
-    .alert.alert-danger ul,
-    .alert.alert-danger li {
+    .alert.alert-success {
+      background: var(--status-done);
+      border-color: rgba(22, 163, 74, 0.12);
+      color: #fff !important;
+    }
+
+    .alert.alert-success ul,
+    .alert.alert-success li {
       color: #fff;
     }
 

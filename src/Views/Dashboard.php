@@ -1,6 +1,7 @@
 <?php
 
 require '../../config/config.php';
+require_once __DIR__ . '/../Controllers/TaskController.php';
 
 session_start();
 
@@ -9,11 +10,9 @@ if (empty($_SESSION['user_id'])) {
     exit;
 }
 
-$tasks = $tasks ?? [
-    ['id' => 1, 'title' => 'Acheter du pain', 'status' => 'Terminée', 'due' => '2025-11-20'],
-    ['id' => 2, 'title' => "Écrire rapport de réunion", 'status' => 'En cours', 'due' => '2025-11-27'],
-    ['id' => 3, 'title' => 'Appeler le plombier', 'status' => 'À faire', 'due' => '2025-12-01'],
-];
+$controller = new TaskController($pdo);
+$tasks = $controller->findAllByUser((int) $_SESSION['user_id']);
+
 ?>
 <!doctype html>
 <html lang="fr">
@@ -56,7 +55,8 @@ $tasks = $tasks ?? [
             border-bottom: 1px solid var(--border);
         }
 
-        .navbar-brand {
+        .navbar .navbar-brand,
+        .navbar .btn {
             color: var(--text) !important;
         }
 
@@ -119,6 +119,23 @@ $tasks = $tasks ?? [
         .text-muted {
             color: var(--muted) !important;
         }
+
+        .alert.alert-danger {
+            background: #ff4d4f;
+            border-color: rgba(255, 77, 79, 0.12);
+            color: #fff !important;
+        }
+
+        .alert.alert-success {
+            background: var(--status-done);
+            border-color: rgba(22, 163, 74, 0.12);
+            color: #fff !important;
+        }
+
+        .alert.alert-success ul,
+        .alert.alert-success li {
+            color: #fff;
+        }
     </style>
 </head>
 
@@ -158,7 +175,7 @@ $tasks = $tasks ?? [
                             <tr>
                                 <th> Tâche </th>
                                 <th> Statut </th>
-                                <th> Échéance </th>
+                                <th> Date de fin </th>
                                 <th class="text-end"> Actions </th>
                             </tr>
                         </thead>
@@ -173,19 +190,29 @@ $tasks = $tasks ?? [
                                         <td><?= htmlspecialchars($t['title'], ENT_QUOTES, 'UTF-8') ?></td>
                                         <td>
                                             <?php
-                                            $badge = match ($t['status']) {
-                                                'Terminée' => 'success',
-                                                'En cours' => 'warning',
+                                            $badge = match ((int) $t['status_id']) {
+                                                3 => 'success',
+                                                2 => 'warning',
                                                 default => 'secondary',
                                             };
+                                            $statusLabel = match ((int) $t['status_id']) {
+                                                3 => 'Terminée',
+                                                2 => 'En cours',
+                                                default => 'Pas commencé',
+                                            };
                                             ?>
-                                            <span class="badge bg-<?= $badge ?>"><?= htmlspecialchars($t['status']) ?></span>
+                                            <span class="badge bg-<?= $badge ?>"><?= htmlspecialchars($statusLabel) ?></span>
                                         </td>
-                                        <td><?= htmlspecialchars($t['due']) ?></td>
+                                        <td>
+                                            <?php if (!empty($t['ended_at'])):
+                                                $d = date_create($t['ended_at']);
+                                                echo htmlspecialchars($d ? $d->format('Y-m-d') : $t['ended_at'], ENT_QUOTES, 'UTF-8');
+                                            endif; ?>
+                                        </td>
                                         <td class="text-end">
-                                            <a href="Tasks/Edit.php?id=<?= urlencode($t['id']) ?>"
+                                            <a href="Tasks/UpdateTask.php?id=<?= urlencode($t['id']) ?>"
                                                 class="btn btn-sm me-1">Modifier</a>
-                                            <form method="post" action="Tasks/Delete.php" class="d-inline-block"
+                                            <form method="post" action="Tasks/DeleteTask.php" class="d-inline-block"
                                                 onsubmit="return confirm('Supprimer cette tâche ?');">
                                                 <input type="hidden" name="id" value="<?= htmlspecialchars($t['id']) ?>">
                                                 <button class="btn btn-sm btn-outline-primary">Supprimer</button>
