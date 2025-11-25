@@ -28,4 +28,24 @@ class UserModel {
             ':password' => $hashedPassword
         ]);
     }
+
+    public function findByEmail(string $email): ?array {
+        $stmt = $this->pdo->prepare("SELECT * FROM users WHERE email = :email LIMIT 1");
+        $stmt->execute([':email' => $email]);
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $user ?: null;
+    }
+
+    public function verifyCredentials(string $email, string $password): ?array {
+        $user = $this->findByEmail($email);
+        if (!$user) {
+            return null;
+        }
+
+        if (password_verify($password, $user['password'])) {
+            return $user;
+        }
+
+        return null;
+    }
 }

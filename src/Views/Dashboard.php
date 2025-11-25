@@ -4,6 +4,12 @@ require '../../config/config.php';
 
 session_start();
 
+// rediriger si non connecté
+if (empty($_SESSION['user_id'])) {
+    header('Location: Auth/Login.php');
+    exit;
+}
+
 $tasks = $tasks ?? [
     ['id'=>1, 'title'=>'Acheter du pain', 'status'=>'Terminée', 'due'=>'2025-11-20'],
     ['id'=>2, 'title'=>"Écrire rapport de réunion", 'status'=>'En cours', 'due'=>'2025-11-27'],

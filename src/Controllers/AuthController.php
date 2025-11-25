@@ -28,21 +28,47 @@ class AuthController {
         }
     }
 
-    public function login() {
-        try {
-            return;
-        } catch (PDOException $e) {
-            $error = "Erreur lors de la connexion : " . $e->getMessage();
-            return $error;
+    public function login(string $email, string $password): array {
+        $user = new User($email, $password);
+        $errors = [];
+
+        if (empty($email) || empty($password)) {
+            $errors[] = "Veuillez saisir votre email et votre mot de passe.";
+        } elseif (!$user->isEmailValid()) {
+            $errors[] = "L'email est invalide.";
         }
+
+        if (!empty($errors)) {
+            return ['success' => false, 'messages' => $errors];
+        }
+
+        $found = $this->model->verifyCredentials($email, $password);
+
+        if (!$found) {
+            return ['success' => false, 'messages' => ["Identifiants incorrects."]];
+        }
+
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        $_SESSION['user_id'] = $found['id'];
+        $_SESSION['email'] = $found['email'];
+
+        return ['success' => true, 'messages' => ["Connexion réussie."]];
     }
 
-    public function logout() {
-        try {
-            return;
-        } catch (PDOException $e) {
-            $error = "Erreur lors de la déconnexion : " . $e->getMessage();
-            return $error;
+    public function logout(): void {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
         }
+
+        $_SESSION = [];
+        if (ini_get("session.use_cookies")) {
+            $params = session_get_cookie_params();
+            setcookie(session_name(), '', time() - 42000, $params["path"], $params["domain"], $params["secure"], $params["httponly"]);
+        }
+
+        session_destroy();
     }
 }

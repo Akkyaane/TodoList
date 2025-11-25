@@ -1,3 +1,38 @@
+<?php
+// ...existing code...
+require '../../../config/config.php';
+require '../../Classes/User.php';
+require '../../Controllers/AuthController.php';
+
+session_start();
+
+// si déjà connecté -> tableau de bord
+if (!empty($_SESSION['user_id'])) {
+    header('Location: ../Dashboard.php');
+    exit;
+}
+
+$messages = [];
+$success = null;
+$email = '';
+
+// traitement du formulaire
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $email = trim($_POST['email'] ?? '');
+    $password = $_POST['password'] ?? '';
+
+    $controller = new AuthController($pdo);
+    $result = $controller->login($email, $password);
+
+    $success = $result['success'] ?? false;
+    $messages = $result['messages'] ?? [];
+
+    if ($success) {
+        header('Location: ../Dashboard.php');
+        exit;
+    }
+}
+?>
 <!doctype html>
 <html lang="fr">
 <head>
@@ -13,7 +48,7 @@
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
   <div class="container">
-    <a class="navbar-brand fw-bold" href="../../Index.php">To do List</a>
+    <a class="navbar-brand fw-bold" href="../Index.php">To do List</a>
     <div class="collapse navbar-collapse">
       <ul class="navbar-nav ms-auto">
         <li class="nav-item me-2">
@@ -33,21 +68,23 @@
       <div class="card-body">
         <h4 class="card-title mb-3 text-center">Se connecter</h4>
 
-        <?php if (!empty($errors ?? [])): ?>
-          <div class="alert alert-danger">
-            <ul class="mb-0">
-              <?php foreach ($errors as $err): ?>
-                <li><?= htmlspecialchars($err) ?></li>
-              <?php endforeach; ?>
-            </ul>
+        <?php if (!empty($messages)): ?>
+          <div class="alert <?= $success ? 'alert-success' : 'alert-danger' ?>">
+            <?php if (is_array($messages)): ?>
+                <?php foreach ($messages as $err): ?>
+                  <div><?= htmlspecialchars($err, ENT_QUOTES, 'UTF-8') ?></div>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <?= htmlspecialchars($messages, ENT_QUOTES, 'UTF-8') ?>
+            <?php endif; ?>
           </div>
         <?php endif; ?>
 
-        <form method="POST" action="/login" novalidate>
+        <form method="POST" action="" novalidate>
           <div class="mb-3">
             <label for="email" class="form-label">Email</label>
             <input id="email" type="email" name="email" required class="form-control" placeholder="vous@exemple.com"
-                   value="<?= htmlspecialchars($_POST['email'] ?? '') ?>">
+                   value="<?= htmlspecialchars($email ?? '', ENT_QUOTES, 'UTF-8') ?>">
           </div>
 
           <div class="mb-3">

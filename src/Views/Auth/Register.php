@@ -43,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
   <div class="container">
-    <a class="navbar-brand fw-bold" href="../../Index.php">To do List</a>
+    <a class="navbar-brand fw-bold" href="../Index.php">To do List</a>
     <div class="collapse navbar-collapse">
       <ul class="navbar-nav ms-auto">
         <li class="nav-item me-2">
