@@ -155,7 +155,7 @@ if (!empty($taskData['ended_at'])) {
                     <?php endif; ?>
                     <li class="nav-item">
                         <form method="post" action="../Auth/Logout.php" class="mb-0">
-                            <button type="submit" class="btn btn-danger">Se déconnecter</button>
+                            <button type="submit" class="btn">Se déconnecter</button>
                         </form>
                     </li>
                 </ul>
@@ -237,12 +237,6 @@ if (!empty($taskData['ended_at'])) {
                         <div class="d-flex gap-2">
                             <button type="submit" class="btn btn-primary">Enregistrer</button>
                             <a href="../Dashboard.php" class="btn btn-outline-secondary">Annuler</a>
-                            <form method="post" action="DeleteTask.php" onsubmit="return confirm('Supprimer cette tâche ?');"
-                                class="ms-auto mb-0">
-                                <input type="hidden" name="id"
-                                    value="<?= htmlspecialchars($taskData['id'] ?? '', ENT_QUOTES, 'UTF-8') ?>">
-                                <button class="btn btn-outline-danger">Supprimer</button>
-                            </form>
                         </div>
                     </form>
                 <?php endif; ?>
