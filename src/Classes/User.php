@@ -17,14 +17,6 @@ class User {
         return $this->password;
     }
 
-    public function setEmail(string $email): void {
-        $this->email = $email;
-    }
-
-    public function setPassword(string $password): void {
-        $this->password = $password;
-    }
-
     public function isEmailValid(): bool {
         return filter_var($this->email, FILTER_VALIDATE_EMAIL) !== false;
     }
