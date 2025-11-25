@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
--- Généré le : lun. 24 nov. 2025 à 14:08
+-- Généré le : mar. 25 nov. 2025 à 12:52
 -- Version du serveur : 9.1.0
 -- Version de PHP : 8.3.14
 
@@ -37,6 +37,28 @@ CREATE TABLE IF NOT EXISTS `role` (
 -- --------------------------------------------------------
 
 --
+-- Structure de la table `status`
+--
+
+DROP TABLE IF EXISTS `status`;
+CREATE TABLE IF NOT EXISTS `status` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(200) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Déchargement des données de la table `status`
+--
+
+INSERT INTO `status` (`id`, `name`) VALUES
+(1, 'Pas commencé'),
+(2, 'En cours'),
+(3, 'Terminé');
+
+-- --------------------------------------------------------
+
+--
 -- Structure de la table `tasks`
 --
 
@@ -49,8 +71,10 @@ CREATE TABLE IF NOT EXISTS `tasks` (
   `created_at` datetime NOT NULL,
   `started_at` datetime NOT NULL,
   `ended_at` datetime NOT NULL,
+  `status_id` int NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `user_id` (`user_id`)
+  KEY `user_id` (`user_id`),
+  KEY `status_id` (`status_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
@@ -64,10 +88,18 @@ CREATE TABLE IF NOT EXISTS `users` (
   `id` int NOT NULL AUTO_INCREMENT,
   `email` varchar(200) NOT NULL,
   `password` varchar(200) NOT NULL,
-  `role_id` int NOT NULL,
+  `role_id` int DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `role_id` (`role_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Déchargement des données de la table `users`
+--
+
+INSERT INTO `users` (`id`, `email`, `password`, `role_id`) VALUES
+(2, 'test@gmail.com', '$2y$10$Bj5V8AYkl5Je2Gj/UCsshOFgbLCrOU/XMgMSZAD6OZuiJ7tlv42em', NULL),
+(3, 'test1@gmail.com', '$2y$10$9uNfY7UmQB0JsdGN9SQ5e.8zhm02DsuVZ1UXcWHieGWG.NeJKgsva', NULL);
 
 --
 -- Contraintes pour les tables déchargées
@@ -77,7 +109,8 @@ CREATE TABLE IF NOT EXISTS `users` (
 -- Contraintes pour la table `tasks`
 --
 ALTER TABLE `tasks`
-  ADD CONSTRAINT `tasks_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `tasks_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `tasks_ibfk_2` FOREIGN KEY (`status_id`) REFERENCES `status` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Contraintes pour la table `users`
