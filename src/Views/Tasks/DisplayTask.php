@@ -123,6 +123,24 @@ if ($id !== null) {
             border-color: var(--azure) !important;
             color: #fff !important;
         }
+
+        .alert {
+            background: #fff;
+            border: 1px solid rgba(0, 0, 0, 0.04);
+            color: var(--text);
+            border-radius: 8px;
+        }
+
+        .alert.alert-danger {
+            background: #ff4d4f;
+            border-color: rgba(255, 77, 79, 0.12);
+            color: #fff !important;
+        }
+
+        .alert.alert-danger ul,
+        .alert.alert-danger li {
+            color: #fff;
+        }
     </style>
 </head>
 

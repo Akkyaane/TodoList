@@ -98,6 +98,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             border-color: var(--azure) !important;
             color: #fff !important;
         }
+
+        .alert.alert-danger {
+            background: #ff4d4f;
+            border-color: rgba(255, 77, 79, 0.12);
+            color: #fff !important;
+        }
+
+        .alert.alert-danger ul,
+        .alert.alert-danger li {
+            color: #fff;
+        }
     </style>
 </head>
 

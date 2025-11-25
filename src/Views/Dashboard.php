@@ -131,7 +131,7 @@ $tasks = $tasks ?? [
                 <ul class="navbar-nav ms-auto align-items-center">
                     <li class="nav-item">
                         <form method="post" action="Auth/Logout.php" class="mb-0">
-                            <button type="submit" class="btn btn-danger">Se déconnecter</button>
+                            <button type="submit" class="btn">Se déconnecter</button>
                         </form>
                     </li>
                 </ul>
@@ -184,11 +184,11 @@ $tasks = $tasks ?? [
                                         <td><?= htmlspecialchars($t['due']) ?></td>
                                         <td class="text-end">
                                             <a href="Tasks/Edit.php?id=<?= urlencode($t['id']) ?>"
-                                                class="btn btn-sm btn-outline-primary me-1">Modifier</a>
+                                                class="btn btn-sm me-1">Modifier</a>
                                             <form method="post" action="Tasks/Delete.php" class="d-inline-block"
                                                 onsubmit="return confirm('Supprimer cette tâche ?');">
                                                 <input type="hidden" name="id" value="<?= htmlspecialchars($t['id']) ?>">
-                                                <button class="btn btn-sm btn-outline-danger">Supprimer</button>
+                                                <button class="btn btn-sm btn-outline-primary">Supprimer</button>
                                             </form>
                                         </td>
                                     </tr>
