@@ -206,7 +206,7 @@ $tasks = $controller->findAllByUser((int) $_SESSION['user_id']);
                                         <td>
                                             <?php if (!empty($t['ended_at'])):
                                                 $d = date_create($t['ended_at']);
-                                                echo htmlspecialchars($d ? $d->format('Y-m-d') : $t['ended_at'], ENT_QUOTES, 'UTF-8');
+                                                echo htmlspecialchars($d ? $d->format('d/m/Y') : $t['ended_at'], ENT_QUOTES, 'UTF-8');
                                             endif; ?>
                                         </td>
                                         <td class="text-end">
