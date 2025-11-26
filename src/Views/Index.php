@@ -149,7 +149,8 @@
       <ul class="list-group list-group-flush">
         <li class="list-group-item d-flex justify-content-between align-items-center">
           Acheter du pain
-          <span class="badge bg-success rounded-pill">Terminée</span>
+          <span class="badge bg-success rounded-pill">Terminé
+          </span>
         </li>
         <li class="list-group-item d-flex justify-content-between align-items-center">
           Écrire rapport de réunion
@@ -157,7 +158,7 @@
         </li>
         <li class="list-group-item d-flex justify-content-between align-items-center">
           Appeler le plombier
-          <span class="badge bg-secondary rounded-pill">À faire</span>
+          <span class="badge bg-secondary rounded-pill">Pas commencé</span>
         </li>
       </ul>
       <p class="mt-3 text-muted small">Créez un compte pour sauvegarder vos listes et y accéder depuis n'importe où.</p>

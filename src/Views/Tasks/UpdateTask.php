@@ -203,7 +203,7 @@ if (!empty($taskData['ended_at'])) {
                         </div>
 
                         <div class="mb-3">
-                            <label for="content" class="form-label">Contenu / Description</label>
+                            <label for="content" class="form-label">Description</label>
                             <textarea id="content" name="content" rows="6" class="form-control"
                                 placeholder="Détails de la tâche"><?= htmlspecialchars($taskData['content'] ?? '', ENT_QUOTES, 'UTF-8') ?></textarea>
                         </div>
