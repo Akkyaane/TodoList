@@ -53,22 +53,16 @@ class TaskController
         if ($prev) {
             $newStatus = $task->getStatusId();
 
-            // when moving to finished (3): ensure ended_at exists (prefer user-provided value)
             if ($newStatus === 3) {
                 if (!empty($task->getEndedAt())) {
-                    // keep the user-provided ended_at
                 } elseif (!empty($prev['ended_at'])) {
                     $task->setEndedAt($prev['ended_at']);
                 } else {
                     $task->setEndedAt($now);
                 }
-            } else {
-                // status != 3: do NOT overwrite ended_at with previous value.
-                // Keep whatever value is currently in $task (user may have changed or cleared it).
             }
         }
 
-        // normalize ended_at if provided as YYYY-MM-DD (convert to datetime)
         $ended = $task->getEndedAt();
         if (!empty($ended) && preg_match('/^\d{4}-\d{2}-\d{2}$/', $ended)) {
             $task->setEndedAt($ended . ' 00:00:00');
